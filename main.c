@@ -1,8 +1,8 @@
-/*
+/* 
  * File:   main.c
- * Author: fbgtoke, jfons
+ * Author: student
  *
- * Created on 7 / april / 2017, 12:50
+ * Created on 27 / març / 2017, 15:49
  */
 
 /* Device header file */
@@ -19,28 +19,58 @@
 #endif
 
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 
+//#define _XTAL_FREQ 8000000
+
+int _sleep_c = 0;
+#define sleep(x) for (_sleep_c = 0; _sleep_c < x; ++_sleep_c) __asm__("nop");
+
+/*
+ * 
+ */
 int main(int argc, char** argv) {
+
+    int i;
 
     // Configure Oscilator
     RCONbits.SWDTEN = 0;
-    //OSCCON = 0b01110000;
     OSCCONbits.COSC = 0b111;
     OSCCONbits.NOSC = 0b111;
 
+    // AD disabled
+    AD1PCFG = 0xFFFF;
+
     // RA0 output
-    TRISA = 0xFFFE;
-    PORTA = 0x0000;
+    TRISB = 0x0000;
+
+    // SI = 1
+    PORTB = 0x4000;
+
+    unsigned char data = 69;
+
+    for (i = 0; i < 8; ++i) {
+        unsigned char value = data >> (8-i);
+        PORTB = 0x4000 | (value & 0x0001) << 12;
+
+        sleep(10);
+
+        PORTB |= 0x8000;
+
+        sleep(100);
+
+        //continuar
+
+    }
 
     while ( 1 ) {
         PORTA ^= 0x1;
 
-        int j;
-        for (j = 0; j < 1000000; ++j)
-                __asm__("nop");
+        int i, j;
+        sleep(1000);
+        
     }
 
     return (EXIT_SUCCESS);
-}
-
+}   
