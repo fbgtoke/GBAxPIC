@@ -24,7 +24,7 @@
 
 //#define _XTAL_FREQ 8000000
 
-int _sleep_c = 0;
+unsigned long long _sleep_c = 0;
 #define sleep(x) for (_sleep_c = 0; _sleep_c < x; ++_sleep_c) __asm__("nop");
 
 /*
@@ -48,29 +48,31 @@ int main(int argc, char** argv) {
     // SI = 0
     PORTB = 0x0000;
 
-    
-    sleep(100);
+    for (i = 0; i < 20; ++i) sleep(25000);
 
     // SI = 1
-    PORTB = 0x4000;
+    PORTB = 0x4080;
+    
+    sleep(25000);
 
     unsigned char data = 69;
 
     for (i = 0; i < 8; ++i) {
-        unsigned char value = data >> (8-i);
+        unsigned char value = data >> (7-i);
         // SD = value (1 or 0)
-        PORTB = 0x4000 | (value & 0x0001) << 12;
+        PORTB = 0x4000 | ((value & 0x0001) << 13);
 
-        sleep(10);
+        sleep(25000);
 
         // SC = 1
         PORTB |= 0x8000;
 
         // delay
-        sleep(10000);
+        sleep(25000);
 
         // SC = 0
         PORTB &= ~0x8000;
+        sleep(25000);
     }
 
     // SI = 0
