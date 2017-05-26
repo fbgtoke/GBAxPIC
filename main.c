@@ -42,41 +42,48 @@ int main(int argc, char** argv) {
     // AD disabled
     AD1PCFG = 0xFFFF;
 
-    // RA0 output
-    TRISB = 0x0000;
+    // RB  output
+    TRISB = 0x0200;
 
     // SI = 0
     PORTB = 0x0000;
 
-    for (i = 0; i < 20; ++i) sleep(25000);
+    unsigned char start_data = 1;
 
-    // SI = 1
-    PORTB = 0x4080;
-    
-    sleep(25000);
+    while ( 1 ) {
 
-    unsigned char data = 69;
+        while ((PORTB & 0x0200) == 0) __asm__("nop");
 
-    for (i = 0; i < 8; ++i) {
-        unsigned char value = data >> (7-i);
-        // SD = value (1 or 0)
-        PORTB = 0x4000 | ((value & 0x0001) << 13);
+        unsigned char data = start_data++;
 
-        sleep(25000);
+        // SI = 1
+        PORTB = 0x4080;
 
-        // SC = 1
-        PORTB |= 0x8000;
+        sleep(100);
 
-        // delay
-        sleep(25000);
+        for (i = 0; i < 8; ++i) {
+            unsigned char value = data >> (7-i);
+            // SD = value (1 or 0)
+            PORTB = 0x4000 | ((value & 0x0001) << 13);
 
-        // SC = 0
-        PORTB &= ~0x8000;
-        sleep(25000);
+            sleep(100);
+
+            // SC = 1
+            PORTB |= 0x8000;
+
+            // delay
+            sleep(100);
+
+            // SC = 0
+            PORTB &= ~0x8000;
+            sleep(100);
+        }
+
+        // SI = 0
+        PORTB = 0x0000;
+
+        for (i = 0; i < 4; ++i) sleep(10000);
     }
-
-    // SI = 0
-    PORTB = 0x0000;
 
     while ( 1 );
 

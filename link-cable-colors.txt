@@ -1,4 +1,4 @@
-2 (SO)  - Negro
+2 (SI)  - Negro
 4 (SD)  - Verde
 
 3 (GND) - Blanco
