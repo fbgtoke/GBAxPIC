@@ -1,10 +1,3 @@
-/*
- * File:   main.c
- * Author: student
- *
- * Created on 27 / març / 2017, 15:49
- */
-
 /* Device header file */
 #if defined(__XC16__)
     #include <xc.h>
